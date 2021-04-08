@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Contract } from "@ethersproject/contracts";
 import { formatUnits } from '@ethersproject/units';
 
-import { Container, Button, Header, Image, Balances, BalanceValue } from "./components";
+import { Container, Button, Header, Logo, Balances, BalanceValue, CardContainer, CardImage } from "./components";
 import logo from "./ppdex_icon.png";
 import useWeb3Modal from "./hooks/useWeb3Modal";
 
@@ -35,6 +35,23 @@ async function readOnChainData(provider, setBalances) {
   };
 
   setBalances(values);
+}
+
+async function loadCards(provider, setCardData) {
+  let signer = provider.getSigner();
+  let address = await signer.getAddress();
+
+  let cards = [];
+  const res = await utils.getCards(address);
+  if (res && res.data && res.data.assets) {
+    cards = res.data.assets;
+  }
+
+  setCardData({
+    cards: cards,
+    loaded: true
+  });
+  return cards;
 }
 
 function WalletButton({ provider, loadWeb3Modal, logoutOfWeb3Modal }) {
@@ -88,25 +105,44 @@ function Loader() {
   );
 }
 
+function Cards(cards) {
+  if (cards && cards.cards) {
+    cards = cards.cards;
+  }
+
+  const cardItems = cards.map((c, i) => {
+    return <CardImage src={c.image_original_url} height="260" width="187.5" key={i} alt={c.name} />
+  });
+
+  return (
+    <CardContainer>
+      {cardItems}
+    </CardContainer>
+  );
+}
+
 
 function App() {
   const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
   const [balances, setBalances] = useState({});
+  const [cardData, setCardData] = useState({});
 
   useEffect(() => {
     if (provider && provider.connection) {
       readOnChainData(provider, setBalances);
+      loadCards(provider, setCardData);
     }
   }, [provider]);
 
   return (
     <div>
       <Header>
-        <Image src={logo}></Image>
+        <Logo src={logo} />
         <WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
       </Header>
       <Container>
         { balances && balances.loaded ? <BalanceDisplay balances={balances} /> : <Loader /> }
+        { cardData && cardData.loaded ? <Cards cards={cardData.cards} /> : <Loader /> }
       </Container>
     </div>
   );

@@ -6,7 +6,7 @@ export const Header = styled.header`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   color: black;
 `;
 
@@ -18,11 +18,13 @@ export const Container = styled.div`
   flex-wrap: wrap;
   font-size: calc(10px + 1vmin);
   min-height: calc(100vh - 70px);
+  padding-top: 20px;
 `;
 
-export const Image = styled.img`
+export const Logo = styled.img`
   height: 5vmin;
   pointer-events: none;
+  margin-left: 20px;
 `;
 
 export const Button = styled.button`
@@ -60,4 +62,20 @@ export const Balances = styled.div`
 export const BalanceValue = styled.span`
   float: right;
   font-weight: normal;
+`;
+
+export const CardContainer = styled.div`
+  order: 2;
+  border-radius: .5rem;
+  box-shadow: 2px 3px 4px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%);
+  padding: 20px;
+  background-color: white;
+  font-size: calc(10px + .7vmin);
+  margin-left: 20px;
+  width: calc(100% - 440px);
+  height: 100%;
+`;
+
+export const CardImage = styled.img`
+  margin: 10px;
 `;
