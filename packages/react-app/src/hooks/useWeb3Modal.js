@@ -5,14 +5,14 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 
 // Enter a valid infura key here to avoid being rate limited
 // You can get a key for free at https://infura.io/register
-const INFURA_ID = "INVALID_INFURA_KEY";
+// const INFURA_ID = "INVALID_INFURA_KEY";
 
 const NETWORK_NAME = "mainnet";
 
 function useWeb3Modal(config = {}) {
   const [provider, setProvider] = useState();
   const [autoLoaded, setAutoLoaded] = useState(false);
-  const { autoLoad = true, infuraId = INFURA_ID, NETWORK = NETWORK_NAME } = config;
+  const { autoLoad = true, /* infuraId = INFURA_ID, */ NETWORK = NETWORK_NAME } = config;
 
   // Web3Modal also supports many other wallets.
   // You can see other options at https://github.com/Web3Modal/web3modal
@@ -22,9 +22,9 @@ function useWeb3Modal(config = {}) {
     providerOptions: {
       walletconnect: {
         package: WalletConnectProvider,
-        options: {
-          infuraId,
-        },
+        // options: {
+        //   infuraId,
+        // },
       },
     },
   });

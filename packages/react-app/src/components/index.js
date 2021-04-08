@@ -1,45 +1,36 @@
 import styled from "styled-components";
 
 export const Header = styled.header`
-  background-color: #282c34;
+  background-color: #ecffe9;
   min-height: 70px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-end;
-  color: white;
+  color: black;
 `;
 
 export const Container = styled.div`
-  align-items: center;
-  background-color: #282c34;
-  color: white;
+  background-color: #ecffe9;
+  color: black;
   display: flex;
-  flex-direction: column;
-  font-size: calc(10px + 2vmin);
-  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  font-size: calc(10px + 1vmin);
   min-height: calc(100vh - 70px);
 `;
 
 export const Image = styled.img`
-  height: 40vmin;
-  margin-bottom: 16px;
+  height: 5vmin;
   pointer-events: none;
 `;
 
-export const Link = styled.a.attrs({
-  target: "_blank",
-  rel: "noopener noreferrer",
-})`
-  color: #61dafb;
-  margin-top: 10px;
-`;
-
 export const Button = styled.button`
-  background-color: white;
+  background: rgb(131,102,255);
+  background: linear-gradient(270deg, rgba(131,102,255,1) 0%, rgba(110,231,118,1) 100%);
   border: none;
   border-radius: 8px;
-  color: #282c34;
+  color: white;
   cursor: pointer;
   font-size: 16px;
   text-align: center;
@@ -51,4 +42,15 @@ export const Button = styled.button`
     border: none;
     outline: none;
   }
+`;
+
+export const Balances = styled.div`
+  border-radius: .5rem;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%);
+  padding: 20px;
+  background-color: white;
+  font-size: calc(10px + .7vmin);
+  height: 100%;
+  margin-left: 20px;
+  order: 1;
 `;
