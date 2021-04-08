@@ -46,11 +46,18 @@ export const Button = styled.button`
 
 export const Balances = styled.div`
   border-radius: .5rem;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%);
+  box-shadow: 2px 3px 4px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%);
   padding: 20px;
   background-color: white;
   font-size: calc(10px + .7vmin);
   height: 100%;
   margin-left: 20px;
   order: 1;
+  width: 300px;
+  font-weight: bold;
+`;
+
+export const BalanceValue = styled.span`
+  float: right;
+  font-weight: normal;
 `;

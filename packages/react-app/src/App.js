@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Contract } from "@ethersproject/contracts";
 import { formatUnits } from '@ethersproject/units';
 
-import { Container, Button, Header, Image, Balances } from "./components";
+import { Container, Button, Header, Image, Balances, BalanceValue } from "./components";
 import logo from "./ppdex_icon.png";
 import useWeb3Modal from "./hooks/useWeb3Modal";
 
 import { addresses, abis } from "@project/contracts";
+import utils from './utils';
 
 
 function formatBalance(bigNumberObj) {
@@ -23,11 +24,13 @@ async function readOnChainData(provider, setBalances) {
   const rewardsBalance = await ppdex.myRewardsBalance(address);
   const stakedBallz = await ppdex.getAddressPpblzStakeAmount(address);
   const ppdexBalance = await ppdex.balanceOf(address);
+  const prices = await utils.getPrices();
 
   let values = {
     rewardsBalance: formatBalance(rewardsBalance),
     stakedBallz: formatBalance(stakedBallz),
     ppdexBalance: formatBalance(ppdexBalance),
+    prices: prices && prices.data,
     loaded: true
   };
 
@@ -57,6 +60,34 @@ function calculateMonthlyPepedex(stakedBallz) {
   return monthly.toFixed(2);
 }
 
+function BalanceDisplay({ balances }) {
+  let ppblzPrice = balances.prices && balances.prices['pepemon-pepeballs'] && balances.prices['pepemon-pepeballs'].usd;
+  let ppdexPrice = balances.prices && balances.prices.pepedex && balances.prices.pepedex.usd;
+  let monthlyPpdex = calculateMonthlyPepedex(balances.stakedBallz);
+  let montlyPpdexDollarValue = (ppdexPrice * monthlyPpdex);
+  let monthlyRoi = (montlyPpdexDollarValue / (ppblzPrice * balances.stakedBallz)) * 100;
+  // TODO: claimable is only 90% of rewardsBalance (other 10% goes to devs)
+
+  return (
+    <Balances>
+      <div>Balances</div>
+      <br />
+      <div>Staked $PPBLZ: <BalanceValue>{ balances.stakedBallz}</BalanceValue></div>
+      <div>Monthly Pepedex: <BalanceValue>{ monthlyPpdex }</BalanceValue></div>
+      <div>Monthly $: <BalanceValue>${ montlyPpdexDollarValue.toFixed(2) }</BalanceValue></div>
+      <div>Monthly ROI: <BalanceValue>{ monthlyRoi.toFixed(2) }%</BalanceValue></div>
+      <div>$PPDEX Balance: <BalanceValue>{ balances.ppdexBalance }</BalanceValue></div>
+      <div>Claimable $PPDEX: <BalanceValue>{ balances.rewardsBalance}</BalanceValue></div>
+    </Balances>
+  );
+}
+
+function Loader() {
+  return (
+    <div>Loading...</div>
+  );
+}
+
 
 function App() {
   const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
@@ -75,19 +106,7 @@ function App() {
         <WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
       </Header>
       <Container>
-        {
-          balances && balances.loaded ?
-
-          <Balances>
-            <div>Staked $PPBLZ: { balances.stakedBallz}</div>
-            <div>Monthly Pepedex: { calculateMonthlyPepedex(balances.stakedBallz) }</div>
-            <br />
-            <div>$PPDEX Balance: { balances.ppdexBalance }</div>
-            <div>Claimable $PPDEX: { balances.rewardsBalance}</div>
-          </Balances>
-
-          : <div>loading..........</div>
-        }
+        { balances && balances.loaded ? <BalanceDisplay balances={balances} /> : <Loader /> }
       </Container>
     </div>
   );
