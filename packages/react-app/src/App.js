@@ -15,9 +15,10 @@ function formatBalance(bigNumberObj) {
   return parseFloat(formatUnits(bigNumberObj.toString(), 'ether')).toFixed(2);
 }
 
-async function readOnChainData(provider, setBalances) {
+async function readOnChainData(provider, setBalances, setConnectedAddress) {
   let signer = provider.getSigner();
   let address = await signer.getAddress();
+  setConnectedAddress(address);
 
   const ppdex = new Contract(addresses.ppdex, abis.ppdex, provider);
 
@@ -70,6 +71,13 @@ function WalletButton({ provider, loadWeb3Modal, logoutOfWeb3Modal }) {
   );
 }
 
+function calculateApy(stakedBallz, ppblzPrice, ppdexPrice) {
+  if (!stakedBallz || !ppblzPrice || !ppdexPrice) return '';
+  const yearlyPpdex = stakedBallz * 19;
+  const apy = (((yearlyPpdex * ppdexPrice) / (stakedBallz * ppblzPrice)) * 100).toFixed(2);
+  return apy + '%';
+}
+
 function calculateMonthlyPepedex(stakedBallz) {
   if (!stakedBallz) return '';
   const yearly = stakedBallz * 19;
@@ -80,19 +88,26 @@ function calculateMonthlyPepedex(stakedBallz) {
 function BalanceDisplay({ balances }) {
   let ppblzPrice = balances.prices && balances.prices['pepemon-pepeballs'] && balances.prices['pepemon-pepeballs'].usd;
   let ppdexPrice = balances.prices && balances.prices.pepedex && balances.prices.pepedex.usd;
-  let monthlyPpdex = calculateMonthlyPepedex(balances.stakedBallz);
-  let montlyPpdexDollarValue = (ppdexPrice * monthlyPpdex);
-  let monthlyRoi = (montlyPpdexDollarValue / (ppblzPrice * balances.stakedBallz)) * 100;
-  // TODO: claimable is only 90% of rewardsBalance (other 10% goes to devs)
+
+  let isStaking = balances.stakedBallz && balances.stakedBallz !== '0.00';
+  let apy, monthlyPpdex, monthlyPpdexDollarValue, monthlyRoi;
+  if (isStaking) {
+    apy = calculateApy(balances.stakedBallz, ppblzPrice, ppdexPrice);
+    monthlyPpdex = calculateMonthlyPepedex(balances.stakedBallz);
+    monthlyPpdexDollarValue = (ppdexPrice * monthlyPpdex);
+    monthlyRoi = (monthlyPpdexDollarValue / (ppblzPrice * balances.stakedBallz)) * 100;
+    // TODO: claimable is only 90% of rewardsBalance (other 10% goes to devs)
+  }
 
   return (
     <Balances>
       <div>Balances</div>
       <br />
       <div>Staked $PPBLZ: <BalanceValue>{ balances.stakedBallz}</BalanceValue></div>
-      <div>Monthly Pepedex: <BalanceValue>{ monthlyPpdex }</BalanceValue></div>
-      <div>Monthly $: <BalanceValue>${ montlyPpdexDollarValue.toFixed(2) }</BalanceValue></div>
-      <div>Monthly ROI: <BalanceValue>{ monthlyRoi.toFixed(2) }%</BalanceValue></div>
+      { isStaking ? <div>APY: <BalanceValue>{ apy }</BalanceValue></div> : '' }
+      { isStaking ? <div>Monthly Pepedex: <BalanceValue>{ monthlyPpdex }</BalanceValue></div> : '' }
+      { isStaking ? <div>Monthly $: <BalanceValue>${ monthlyPpdexDollarValue.toFixed(2) }</BalanceValue></div> : '' }
+      { isStaking ? <div>Monthly ROI: <BalanceValue>{ monthlyRoi.toFixed(2) }%</BalanceValue></div> : '' }
       <div>$PPDEX Balance: <BalanceValue>{ balances.ppdexBalance }</BalanceValue></div>
       <div>Claimable $PPDEX: <BalanceValue>{ balances.rewardsBalance}</BalanceValue></div>
     </Balances>
@@ -121,15 +136,27 @@ function Cards(cards) {
   );
 }
 
+function AddressDisplay({ address }) {
+  if (!address) return '';
+
+  let addressStr = address.slice(0, 6) + '...' + address.slice(-4);
+  return (
+    <div style={{ display: 'inline-block' }}>
+      { addressStr }
+    </div>
+  )
+}
+
 
 function App() {
   const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
   const [balances, setBalances] = useState({});
   const [cardData, setCardData] = useState({});
+  const [connectedAddress, setConnectedAddress] = useState('');
 
   useEffect(() => {
     if (provider && provider.connection) {
-      readOnChainData(provider, setBalances);
+      readOnChainData(provider, setBalances, setConnectedAddress);
       loadCards(provider, setCardData);
     }
   }, [provider]);
@@ -138,7 +165,15 @@ function App() {
     <div>
       <Header>
         <Logo src={logo} />
-        { provider ? <WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} /> : '' }
+        <div>
+          { provider ?
+            <div>
+              { connectedAddress ? <AddressDisplay address={ connectedAddress } /> : '' }
+              <WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
+            </div>
+            : ''
+          }
+        </div>
       </Header>
       <OuterContainer>
         {
