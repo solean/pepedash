@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Contract } from "@ethersproject/contracts";
 import { formatUnits } from '@ethersproject/units';
 
-import { Container, Button, Header, Logo, Balances, BalanceValue, CardContainer, CardImage } from "./components";
+import { OuterContainer, Container, Button, Header, Logo, Balances, BalanceValue, CardContainer, CardImage } from "./components";
 import logo from "./ppdex_icon.png";
 import useWeb3Modal from "./hooks/useWeb3Modal";
 
@@ -138,12 +138,18 @@ function App() {
     <div>
       <Header>
         <Logo src={logo} />
-        <WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
+        { provider ? <WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} /> : '' }
       </Header>
-      <Container>
-        { balances && balances.loaded ? <BalanceDisplay balances={balances} /> : <Loader /> }
-        { cardData && cardData.loaded ? <Cards cards={cardData.cards} /> : <Loader /> }
-      </Container>
+      <OuterContainer>
+        {
+          provider ? 
+            <Container>
+              { balances && balances.loaded ? <BalanceDisplay balances={balances} /> : <Loader /> }
+              { cardData && cardData.loaded ? <Cards cards={cardData.cards} /> : <Loader /> }
+            </Container>
+          : <div style={{ marginBottom: '70px' }}><WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} /></div>
+        }
+      </OuterContainer>
     </div>
   );
 }

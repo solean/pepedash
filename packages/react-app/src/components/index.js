@@ -10,9 +10,15 @@ export const Header = styled.header`
   color: black;
 `;
 
-export const Container = styled.div`
+export const OuterContainer = styled.div`
   background-color: #ecffe9;
-  color: black;
+  min-height: calc(100vh - 70px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const Container = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
