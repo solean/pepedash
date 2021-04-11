@@ -126,7 +126,11 @@ function Cards(cards) {
   }
 
   const cardItems = cards.map((c, i) => {
-    return <CardImage src={c.image_original_url} height="260" width="187.5" key={i} alt={c.name} />
+    return (
+      <a href={c.permalink} target="_blank" rel="noopener noreferrer" key={i}>
+        <CardImage src={c.image_original_url} height="260" width="187.5" alt={c.name} />
+      </a>
+    );
   });
 
   return (
