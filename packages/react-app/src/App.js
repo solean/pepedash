@@ -10,6 +10,9 @@ import { addresses, abis } from "@project/contracts";
 import utils from './utils';
 
 
+const YEARLY_PPDEX_REWARD = 14.25;
+
+
 function formatBalance(bigNumberObj) {
   if (!bigNumberObj) return '';
   return parseFloat(formatUnits(bigNumberObj.toString(), 'ether')).toFixed(2);
@@ -73,14 +76,14 @@ function WalletButton({ provider, loadWeb3Modal, logoutOfWeb3Modal }) {
 
 function calculateApy(stakedBallz, ppblzPrice, ppdexPrice) {
   if (!stakedBallz || !ppblzPrice || !ppdexPrice) return '';
-  const yearlyPpdex = stakedBallz * 19;
+  const yearlyPpdex = stakedBallz * YEARLY_PPDEX_REWARD;
   const apy = (((yearlyPpdex * ppdexPrice) / (stakedBallz * ppblzPrice)) * 100).toFixed(2);
   return apy + '%';
 }
 
 function calculateMonthlyPepedex(stakedBallz) {
   if (!stakedBallz) return '';
-  const yearly = stakedBallz * 19;
+  const yearly = stakedBallz * YEARLY_PPDEX_REWARD;
   const monthly = yearly / 12;
   return monthly.toFixed(2);
 }
