@@ -185,10 +185,15 @@ function App() {
       <OuterContainer>
         {
           provider ? 
-            <Container>
-              { balances && balances.loaded ? <BalanceDisplay balances={balances} /> : <Loader /> }
-              { cardData && cardData.loaded ? <Cards cards={cardData.cards} /> : <Loader /> }
-            </Container>
+            <div>
+              { balances && balances.loaded && cardData && cardData.loaded ?
+                <Container>
+                  <BalanceDisplay balances={balances} />
+                  <Cards cards={cardData.cards} />
+                </Container>
+                : <Loader />
+              }
+            </div>
           : <div style={{ marginBottom: '70px' }}><WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} /></div>
         }
       </OuterContainer>
