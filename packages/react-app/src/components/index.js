@@ -13,9 +13,9 @@ export const Header = styled.header`
 export const OuterContainer = styled.div`
   background-color: #ecffe9;
   min-height: calc(100vh - 70px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
 `;
 
 export const Container = styled.div`
@@ -45,6 +45,7 @@ export const Button = styled.button`
   text-decoration: none;
   margin: 0px 20px;
   padding: 12px 24px;
+  user-select: none;
 
   ${props => props.hidden && "hidden"} :focus {
     border: none;
@@ -80,8 +81,52 @@ export const CardContainer = styled.div`
   margin-left: 20px;
   width: calc(100% - 440px);
   height: 100%;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+`;
+
+export const Card = styled.div`
+  height: 260px;
+  width: 187.5px;
+  perspective: 1000px;
+  margin: 10px;
+`;
+
+export const CardInner = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s;
+  transform-style: preserve-3d;
+
+  &:hover {
+    transform: rotateY(180deg);
+  }
+`;
+
+export const CardFront = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+`;
+
+export const CardBack = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+
+  transform: rotateY(180deg);
+
+  color: white;
+  background-color: black;
 `;
 
 export const CardImage = styled.img`
-  margin: 10px;
+  // margin: 10px;
 `;

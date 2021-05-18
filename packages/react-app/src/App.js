@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Contract } from "@ethersproject/contracts";
 import { formatUnits } from '@ethersproject/units';
 
-import { OuterContainer, Container, Button, Header, Logo, Balances, BalanceValue, CardContainer, CardImage } from "./components";
+import { OuterContainer, Container, Button, Header, Logo, Balances, BalanceValue, CardContainer, Card, CardInner, CardFront, CardBack, CardImage } from "./components";
 import logo from "./ppdex_icon.png";
 import useWeb3Modal from "./hooks/useWeb3Modal";
 
@@ -126,13 +126,22 @@ function Loader() {
 function Cards(cards) {
   if (cards && cards.cards) {
     cards = cards.cards;
+    // cards = cards.slice(0, 1);
+    console.log(cards.length);
   }
 
   const cardItems = cards.map((c, i) => {
     return (
-      <a href={c.permalink} target="_blank" rel="noopener noreferrer" key={i}>
-        <CardImage src={c.image_original_url} height="260" width="187.5" alt={c.name} />
-      </a>
+        <Card>
+          <CardInner>
+            <CardFront>
+              <CardImage src={c.image_original_url} height="260" width="187.5" alt={c.name} />
+            </CardFront>
+            <CardBack>
+              <p>Test</p>
+            </CardBack>
+          </CardInner>
+        </Card>
     );
   });
 
