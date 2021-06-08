@@ -50,6 +50,10 @@ export const Button = styled.button`
     border: none;
     outline: none;
   }
+
+  &:hover {
+    opacity: 80%;
+  }
 `;
 
 export const Balances = styled.div`
