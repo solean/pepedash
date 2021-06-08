@@ -99,8 +99,8 @@ function BalanceDisplay({ balances }) {
     monthlyPpdex = calculateMonthlyPepedex(balances.stakedBallz);
     monthlyPpdexDollarValue = (ppdexPrice * monthlyPpdex);
     monthlyRoi = (monthlyPpdexDollarValue / (ppblzPrice * balances.stakedBallz)) * 100;
-    // TODO: claimable is only 90% of rewardsBalance (other 10% goes to devs)
   }
+  let claimablePpdex = (balances.rewardsBalance * .9).toFixed(2);
 
   return (
     <Balances>
@@ -112,7 +112,7 @@ function BalanceDisplay({ balances }) {
       { isStaking ? <div>Monthly $: <BalanceValue>${ monthlyPpdexDollarValue.toFixed(2) }</BalanceValue></div> : '' }
       { isStaking ? <div>Monthly ROI: <BalanceValue>{ monthlyRoi.toFixed(2) }%</BalanceValue></div> : '' }
       <div>$PPDEX Balance: <BalanceValue>{ balances.ppdexBalance }</BalanceValue></div>
-      <div>Claimable $PPDEX: <BalanceValue>{ balances.rewardsBalance}</BalanceValue></div>
+      <div>Claimable $PPDEX: <BalanceValue>{ claimablePpdex }</BalanceValue></div>
     </Balances>
   );
 }
